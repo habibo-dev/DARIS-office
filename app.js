@@ -39,42 +39,9 @@
   }
   var pct = function (p) { return p.old ? Math.round((1 - p.price / p.old) * 100) : 0; };
 
-  /* ---------- stars ---------- */
-  function stars(el, n, blur, a0, a1) {
-    var s = [], i;
-    for (i = 0; i < n; i++) {
-      s.push((Math.random() * 100).toFixed(2) + 'vw ' + (Math.random() * 100).toFixed(2) + 'vh ' + blur + 'px 0 rgba(255,255,255,' + (a0 + Math.random() * (a1 - a0)).toFixed(2) + ')');
-    }
-    el.style.boxShadow = s.join(',');
-  }
-  stars($('#stA'), 150, 0, .05, .3);
-  stars($('#stB'), 18, 1.2, .35, .7);
-
-  /* ---------- catalog ---------- */
-  var grid = $('#grid');
-  grid.innerHTML = PRODUCTS.map(function (p, i) {
-    var d = pct(p);
-    return '<article class="card" data-cat="' + p.cat + '" data-i="' + i + '" data-in style="--d:' + ((i % 4) * .06) + 's">' +
-      '<button class="card__img" type="button" aria-label="تكبير: ' + p.name + '">' +
-      (d ? '<span class="tag">-' + d + '%</span>' : '') +
-      '<img src="' + img(p, 's') + '" srcset="' + img(p, 's') + ' 480w, ' + img(p, 'l') + ' 900w" sizes="(max-width:520px) 50vw, 280px" alt="' + p.name + '" loading="lazy" decoding="async"></button>' +
-      '<div class="card__body"><h3>' + p.name + '</h3><p>' + p.desc + '</p>' + priceHTML(p) +
-      '<a class="order" href="' + wa(p) + '" target="_blank" rel="noopener">' + WA_ICON + 'اطلب عبر واتساب</a></div></article>';
-  }).join('');
-  $('#countOffers').textContent = PRODUCTS.length;
-
-  var chips = $$('.chip');
-  chips.forEach(function (c) {
-    c.addEventListener('click', function () {
-      chips.forEach(function (x) { x.classList.toggle('is-on', x === c); x.setAttribute('aria-selected', x === c); });
-      var f = c.dataset.f;
-      $$('.card', grid).forEach(function (card) { card.classList.toggle('out', f !== 'all' && card.dataset.cat !== f); });
-    });
-  });
-
   /* ---------- lightbox ---------- */
   var lb = $('#lb'), cur = 0;
-  function visibleIdx() { return $$('.card:not(.out)', grid).map(function (c) { return +c.dataset.i; }); }
+  function visibleIdx() { return $$('.row:not(.out)', acc).map(function (c) { return +c.dataset.i; }); }
   function show(i) {
     var p = PRODUCTS[i]; cur = i;
     $('#lbImg').src = img(p, 'l'); $('#lbImg').alt = p.name;
@@ -87,10 +54,7 @@
     var v = visibleIdx(); if (!v.length) return;
     var k = v.indexOf(cur); k = (k + dir + v.length) % v.length; show(v[k]);
   }
-  grid.addEventListener('click', function (e) {
-    var b = e.target.closest('.card__img'); if (b) open(+b.parentNode.dataset.i);
-  });
-  $('#lbX').addEventListener('click', function () { lb.close(); });
+    $('#lbX').addEventListener('click', function () { lb.close(); });
   $('#lbP').addEventListener('click', function () { step(-1); });
   $('#lbN').addEventListener('click', function () { step(1); });
   lb.addEventListener('click', function (e) { if (e.target === lb) lb.close(); });
@@ -98,52 +62,90 @@
     if (e.key === 'ArrowLeft') step(1); else if (e.key === 'ArrowRight') step(-1);
   });
 
-  /* ---------- 3D ring ---------- */
-  var wrap = $('#ringWrap'), ring = $('#ring'), N = PRODUCTS.length, ry = 0, vel = 0, drag = false, sx = 0, moved = 0, hover = false;
-  ring.innerHTML = PRODUCTS.map(function (p, i) {
-    return '<div class="rc" style="--i:' + i + '" data-i="' + i + '"><img src="' + img(p, 's') + '" alt="' + p.name + '" draggable="false"></div>';
-  }).join('');
-  ring.style.setProperty('--n', N);
-  function size() {
-    var cw = parseFloat(getComputedStyle(wrap).getPropertyValue('--cw')) || 210;
-    ring.style.setProperty('--cw', cw + 'px');
-    ring.style.setProperty('--rad', Math.round(cw / 2 / Math.tan(Math.PI / N) + 70) + 'px');
+  /* ---------- helpers for new layout ---------- */
+  var order = ['all'];
+  function rowHTML(p, i) {
+    var d = pct(p);
+    return '<div class="row" data-cat="' + p.cat + '" data-i="' + i + '">' +
+      '<button class="row__h" type="button" aria-expanded="false"><span class="row__n"></span><span class="row__t">' + p.name + '</span>' +
+      '<span class="row__p">' + (p.price ? '<bdi dir="ltr">' + fmt(p.price) + '</bdi><small>دج</small>' : 'اتصل للسعر') + '</span><span class="row__x" aria-hidden="true"></span></button>' +
+      '<div class="row__b"><div class="row__in"><div class="row__c">' +
+      '<button class="row__img" type="button" aria-label="تكبير: ' + p.name + '">' + (d ? '<span class="tag">-' + d + '%</span>' : '') +
+      '<img src="' + img(p, 's') + '" srcset="' + img(p, 's') + ' 480w, ' + img(p, 'l') + ' 900w" sizes="230px" alt="' + p.name + '" loading="lazy" decoding="async"></button>' +
+      '<div class="row__d"><p>' + p.desc + '</p>' + priceHTML(p) +
+      '<div class="btns"><a class="pill pill--fill" href="' + wa(p) + '" target="_blank" rel="noopener"><i></i>اطلب عبر واتساب</a></div></div></div></div></div></div>';
   }
-  size(); addEventListener('resize', size);
-  function paint() { ring.style.transform = 'translateY(14px) rotateX(-7deg) rotateY(' + ry.toFixed(2) + 'deg)'; }
-  paint();
-  var raf;
-  function tick() {
-    if (!drag) {
-      ry += vel; vel *= .94;
-      if (!reduce && !hover) ry -= .12;
-    }
-    paint(); raf = requestAnimationFrame(tick);
-  }
-  var heroEl = $('.hero');
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (en) {
-      if (en[0].isIntersecting) { if (!raf) tick(); } else { cancelAnimationFrame(raf); raf = 0; }
-    }).observe(heroEl);
-  } else tick();
 
-  wrap.addEventListener('pointerdown', function (e) { drag = true; sx = e.clientX; moved = 0; wrap.setPointerCapture(e.pointerId); });
-  wrap.addEventListener('pointermove', function (e) {
-    if (!drag) return;
-    var dx = e.clientX - sx; sx = e.clientX; moved += Math.abs(dx);
-    ry += dx * .35; vel = dx * .35;
-  });
-  function end(e) {
-    if (!drag) return; drag = false;
-    if (moved < 6) {
-      var t = document.elementFromPoint(e.clientX, e.clientY), c = t && t.closest && t.closest('.rc');
-      if (c) open(+c.dataset.i);
-    }
+  /* ---------- accordion ---------- */
+  var acc = $('#acc');
+  acc.innerHTML = PRODUCTS.map(rowHTML).join('');
+  function renumber() {
+    var n = 0;
+    $$('.row', acc).forEach(function (r) { if (!r.classList.contains('out')) { n++; $('.row__n', r).textContent = (n < 10 ? '0' : '') + n; } });
   }
-  wrap.addEventListener('pointerup', end);
-  wrap.addEventListener('pointercancel', function () { drag = false; });
-  wrap.addEventListener('mouseenter', function () { hover = true; });
-  wrap.addEventListener('mouseleave', function () { hover = false; });
+  function toggle(r, force) {
+    var open = force !== undefined ? force : !r.classList.contains('open');
+    $$('.row.open', acc).forEach(function (x) { x.classList.remove('open'); $('.row__h', x).setAttribute('aria-expanded', 'false'); });
+    if (open) { r.classList.add('open'); $('.row__h', r).setAttribute('aria-expanded', 'true'); }
+  }
+  acc.addEventListener('click', function (e) {
+    var h = e.target.closest('.row__h'); if (h) { toggle(h.parentNode); return; }
+    var b = e.target.closest('.row__img'); if (b) open(+b.closest('.row').dataset.i);
+  });
+  /* ---------- ranges filter ---------- */
+  var tiles = $$('.tile'), cnt = { all: PRODUCTS.length, operator: 0, visitor: 0, office: 0 };
+  PRODUCTS.forEach(function (p) { cnt[p.cat]++; });
+  Object.keys(cnt).forEach(function (k) { $('#n-' + k).textContent = cnt[k] + ' عروض'; });
+  function filter(f) {
+    tiles.forEach(function (t) { t.classList.toggle('is-on', t.dataset.f === f && f !== 'all'); });
+    $$('.row', acc).forEach(function (r) { r.classList.toggle('out', f !== 'all' && r.dataset.cat !== f); });
+    $('#filterName').textContent = f === 'all' ? '' : '— ' + CATS[f];
+    renumber();
+    var first = $('.row:not(.out)', acc); if (first) toggle(first, true);
+  }
+  tiles.forEach(function (t) {
+    t.addEventListener('click', function () {
+      filter(t.dataset.f);
+      $('#offers').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    });
+  });
+  filter('all');
+
+  /* ---------- best deals rail ---------- */
+  var best = PRODUCTS.map(function (p, i) { return { p: p, i: i }; }).filter(function (x) { return x.p.old; })
+    .sort(function (a, b) { return pct(b.p) - pct(a.p); }).slice(0, 5);
+  $('#rail').innerHTML = best.map(function (x) {
+    var p = x.p;
+    return '<article class="rc" data-i="' + x.i + '"><button class="rc__img" type="button" aria-label="تكبير: ' + p.name + '"><span class="tag">-' + pct(p) + '%</span>' +
+      '<img src="' + img(p, 's') + '" alt="' + p.name + '" loading="lazy"></button><div class="rc__b"><h3>' + p.name + '</h3>' + priceHTML(p) +
+      '<a class="pill pill--fill" href="' + wa(p) + '" target="_blank" rel="noopener"><i></i>اطلب الآن</a></div></article>';
+  }).join('');
+  $('#rail').addEventListener('click', function (e) {
+    var b = e.target.closest('.rc__img'); if (b) open(+b.closest('.rc').dataset.i);
+  });
+
+  /* ---------- hero price + parallax ---------- */
+  var min = Math.min.apply(null, PRODUCTS.filter(function (p) { return p.price; }).map(function (p) { return p.price; }));
+  $('#fromPrice').textContent = fmt(min);
+  var himg = $('#heroImg'), hbox = himg.parentNode;
+  if (!reduce) addEventListener('scroll', function () {
+    var y = Math.min(scrollY, 700); himg.style.transform = 'translateY(' + (-y * .07).toFixed(1) + 'px) scale(' + (1 + y * .00012).toFixed(4) + ')';
+  }, { passive: true });
+
+  /* ---------- story slider ---------- */
+  var SL = [['room', 'مكتب مجهّز بأثاث داريس موبيليا'], ['visitors', 'كراسي زوار جلدية'], ['nova', 'كراسي موظفين نوفا']], si = 0;
+  function slide(d) {
+    si = (si + d + SL.length) % SL.length;
+    var a = $('#storyImg'), b = $('#storyImg2'), n = (si + 1) % SL.length;
+    a.style.opacity = b.style.opacity = 0;
+    setTimeout(function () {
+      a.src = 'assets/img/' + SL[si][0] + '.webp'; a.alt = SL[si][1];
+      b.src = 'assets/img/' + SL[n][0] + '.webp'; b.alt = SL[n][1];
+      a.style.opacity = b.style.opacity = 1; $('#cntS').textContent = (si + 1) + ' / ' + SL.length;
+    }, reduce ? 0 : 280);
+  }
+  $('#prevS').addEventListener('click', function () { slide(-1); });
+  $('#nextS').addEventListener('click', function () { slide(1); });
 
   /* ---------- nav ---------- */
   var nav = $('#nav'), burger = $('#burger'), menu = $('#menu');
@@ -153,8 +155,6 @@
     burger.setAttribute('aria-expanded', o); burger.setAttribute('aria-label', o ? 'إغلاق القائمة' : 'فتح القائمة');
   });
   $$('a', menu).forEach(function (a) { a.addEventListener('click', function () { menu.classList.remove('open'); burger.setAttribute('aria-expanded', false); }); });
-
-  /* active link on scroll */
   var links = $$('a', menu), secs = links.map(function (a) { return $(a.getAttribute('href')); });
   if ('IntersectionObserver' in window) {
     var so = new IntersectionObserver(function (en) {
