@@ -29,6 +29,7 @@
     <a class="brand" href="#top" aria-label="داريس موبيليا — الرئيسية"><b>DARIS</b><small>MOBILIER</small></a>
     <nav class="nav__links" id="menu" aria-label="القائمة الرئيسية">
       <a href="#top">الرئيسية</a>
+      <a href="#showroom">المعرض</a>
       <a href="#story">من نحن</a>
       <a href="#ranges">التشكيلات</a>
       <a href="#offers">العروض</a>
@@ -55,6 +56,38 @@
             <small>دج</small>
           </figcaption>
         </figure>
+      </div>
+    </section>
+
+    <!-- SHOWROOM 3D -->
+    <section class="show" id="showroom" aria-labelledby="show-title" data-env="studio">
+      <div class="wrap">
+        <header class="show__head" data-in>
+          <p class="eyebrow">معرض ثلاثي الأبعاد</p>
+          <h2 id="show-title">تجوّل بين كراسينا</h2>
+          <p>اسحب لتدوير المعرض، أو استخدم الأسهم. غيّر الإضاءة لترى كل قطعة بأجواء مختلفة.</p>
+        </header>
+        <div class="stage" id="stage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="معرض المنتجات ثلاثي الأبعاد — استخدم الأسهم للتنقل">
+          <div class="stage__light" aria-hidden="true"></div>
+          <div class="stage__floor" aria-hidden="true"></div>
+          <div class="cf" id="cf"></div>
+          <button class="cf__a cf__a--p" id="cfP" type="button" aria-label="السابق">›</button>
+          <button class="cf__a cf__a--n" id="cfN" type="button" aria-label="التالي">‹</button>
+          <div class="ctrl" role="toolbar" aria-label="خيارات المعرض">
+            <div class="seg" id="envSeg" role="radiogroup" aria-label="الإضاءة">
+              <button type="button" role="radio" aria-checked="true" data-env="studio">استوديو</button>
+              <button type="button" role="radio" aria-checked="false" data-env="warm">دافئ</button>
+              <button type="button" role="radio" aria-checked="false" data-env="light">فاتح</button>
+            </div>
+            <button class="tgl" id="spinBtn" type="button" aria-pressed="true"><i></i>دوران تلقائي</button>
+          </div>
+        </div>
+        <div class="info" id="info" data-in>
+          <div class="info__n"><b id="cfNum">01</b><span id="cfTot">/ 10</span></div>
+          <div class="info__t"><h3 id="cfName"></h3><p id="cfDesc"></p></div>
+          <div class="info__p"><div class="price" id="cfPrice"></div><a class="pill pill--fill" id="cfWa" target="_blank" rel="noopener"><i></i>اطلب عبر واتساب</a></div>
+        </div>
+        <div class="thumbs" id="thumbs" role="tablist" aria-label="اختيار المنتج"></div>
       </div>
     </section>
 

@@ -8,15 +8,15 @@
   /* ---- المنتجات: عدّل الأسعار والأسماء من هنا ----
      price = السعر الجديد (دج) | old = السعر القديم | price:null = "اتصل لمعرفة السعر" */
   var PRODUCTS = [
-    { id: 1,  cat: 'operator', name: 'كرسي موظف REF5028',        desc: 'ظهر شبكي يسمح بالتهوية، مقعد مريح وهيكل متين. اللون المتوفر: أسود.', price: 7500,  old: null },
-    { id: 2,  cat: 'visitor',  name: 'كرسي زوار مبطّن',           desc: 'تبطين مريح بهيكل معدني قوي — كمية محدودة جداً.',                     price: 2000,  old: 2850 },
+    { id: 1,  cat: 'operator', name: 'كرسي موظف REF5028',        desc: 'ظهر شبكي يسمح بالتهوية، مقعد مريح وقاعدة كروم متحركة. اللون: أسود.', price: 7500,  old: null },
+    { id: 2,  cat: 'visitor',  name: 'كراسي زوار قابلة للطي',           desc: 'كراسي قابلة للطي بتبطين مريح وهيكل معدني قوي، بألوان بني وأسود وبيج — كمية محدودة.',                     price: 2000,  old: 2850 },
     { id: 3,  cat: 'visitor',  name: 'طقم كراسي زوار ملوّنة',     desc: 'ألوان متعددة (برتقالي، أسود، عنابي، أزرق) بهيكل أسود أنيق.',         price: 2300,  old: 2800 },
     { id: 4,  cat: 'visitor',  name: 'كراسي زوار جلدية',          desc: 'جلد اصطناعي بخطوط أنيقة، متوفرة بعدة ألوان: أسود، أحمر، أبيض، بني.', price: 2500,  old: 3150 },
-    { id: 5,  cat: 'visitor',  name: 'كرسي استقبال جلد بأذرع كروم', desc: 'جلد أسود بتبطين مربعات وأذرع كروم، مثالي للاستقبال وقاعات الانتظار.', price: 8000,  old: 9500 },
+    { id: 5,  cat: 'visitor',  name: 'كرسي استقبال جلد بأذرع كروم', desc: 'جلد أسود بتبطين مربعات وهيكل وأذرع كروم، مثالي للاستقبال وقاعات الانتظار.', price: 8000,  old: 9500 },
     { id: 6,  cat: 'operator', name: 'كرسي موظف نوفا — Nova',     desc: 'ظهر شبكي وقاعدة كروم متحركة، متوفر بالوردي والأخضر.',                 price: 13000, old: 17000 },
-    { id: 7,  cat: 'visitor',  name: 'كراسي زوار V01',            desc: 'ألوان زاهية (أخضر، أزرق، رمادي) بهيكل كروم — كمية محدودة.',            price: null,  old: null },
-    { id: 8,  cat: 'operator', name: 'كرسي موظف برو — Pro',       desc: 'مسند رأس وظهر شبكي مريح لساعات العمل الطويلة، بالأحمر والأزرق.',      price: 16000, old: 21000 },
-    { id: 9,  cat: 'operator', name: 'كرسي موظف d’04',       desc: 'تصميم عصري بظهر شبكي أسود وأذرع كروم وقاعدة متحركة.',                 price: 12000, old: 16500 },
+    { id: 7,  cat: 'visitor',  name: 'كراسي زوار V01',            desc: 'ألوان زاهية (أخضر، أزرق، رمادي) بهيكل كروم، قابلة للتكديس — كمية محدودة.',            price: null,  old: null },
+    { id: 8,  cat: 'operator', name: 'كرسي موظف برو — Pro',       desc: 'مسند رأس وظهر شبكي مريح لساعات العمل الطويلة، بالوردي والأزرق.',      price: 16000, old: 21000 },
+    { id: 9,  cat: 'operator', name: 'كرسي موظف d’04',       desc: 'ظهر شبكي أسود بإطار كروم وأذرع مريحة وقاعدة متحركة.',                 price: 12000, old: 16500 },
     { id: 10, cat: 'office',   name: 'طقم مكتب كامل',             desc: 'مكتب بشكل L بلون البلوط الفاتح والرمادي + خزانة تخزين + وحدة متحركة + طاولة قهوة.', price: 63000, old: null }
   ];
 
@@ -71,7 +71,7 @@
       '<span class="row__p">' + (p.price ? '<bdi dir="ltr">' + fmt(p.price) + '</bdi><small>دج</small>' : 'اتصل للسعر') + '</span><span class="row__x" aria-hidden="true"></span></button>' +
       '<div class="row__b"><div class="row__in"><div class="row__c">' +
       '<button class="row__img" type="button" aria-label="تكبير: ' + p.name + '">' + (d ? '<span class="tag">-' + d + '%</span>' : '') +
-      '<img src="' + img(p, 's') + '" srcset="' + img(p, 's') + ' 480w, ' + img(p, 'l') + ' 900w" sizes="230px" alt="' + p.name + '" loading="lazy" decoding="async"></button>' +
+      '<img src="' + img(p, 's') + '" srcset="' + img(p, 's') + ' 480w, ' + img(p, 'l') + ' 900w" sizes="320px" alt="' + p.name + '" loading="lazy" decoding="async"></button>' +
       '<div class="row__d"><p>' + p.desc + '</p>' + priceHTML(p) +
       '<div class="btns"><a class="pill pill--fill" href="' + wa(p) + '" target="_blank" rel="noopener"><i></i>اطلب عبر واتساب</a></div></div></div></div></div></div>';
   }
@@ -164,6 +164,100 @@
     }, { rootMargin: '-45% 0px -50% 0px' });
     secs.forEach(function (s) { s && so.observe(s); });
   }
+
+  /* ---------- 3D showroom (CSS 3D cover-flow) ---------- */
+  var stage = $('#stage'), cf = $('#cf'), show = $('#showroom'), thumbs = $('#thumbs');
+  var pos = 0, target = 0, cfRaf = 0, act = -1, dragging = false, sx0 = 0, moved = 0, vel = 0, hoverS = false, visible = true;
+  var spinBtn = $('#spinBtn');
+  cf.innerHTML = PRODUCTS.map(function (p, i) {
+    return '<div class="cf__i" data-i="' + i + '"><img src="' + img(p, 'l') + '" alt="' + p.name + '" draggable="false" decoding="async"' + (i < 3 ? '' : ' loading="lazy"') + '><img class="refl" src="' + img(p, 's') + '" alt="" aria-hidden="true" draggable="false"></div>';
+  }).join('');
+  thumbs.innerHTML = PRODUCTS.map(function (p, i) {
+    return '<button type="button" role="tab" aria-selected="false" aria-label="' + p.name + '" data-i="' + i + '"><img src="' + img(p, 's') + '" alt="" loading="lazy"></button>';
+  }).join('');
+  var cfItems = $$('.cf__i', cf), thBtns = $$('button', thumbs);
+  $('#cfTot').textContent = '/ ' + PRODUCTS.length;
+  function stepPx() { var w = stage.clientWidth; return w < 600 ? w * .34 : Math.min(400, w * .3); }
+  function wrapD(d) { var N = PRODUCTS.length; d = ((d % N) + N) % N; return d > N / 2 ? d - N : d; }
+  function setActive(a) {
+    if (a === act) return; act = a; var p = PRODUCTS[a];
+    $('#cfNum').textContent = (a < 9 ? '0' : '') + (a + 1);
+    $('#cfName').textContent = p.name; $('#cfDesc').textContent = p.desc;
+    $('#cfPrice').innerHTML = priceHTML(p).replace(/^<div class="price">|<\/div>$/g, '');
+    $('#cfWa').href = wa(p);
+    thBtns.forEach(function (b, i) { b.setAttribute('aria-selected', i === a); });
+    var t = thBtns[a]; if (t && thumbs.scrollWidth > thumbs.clientWidth) thumbs.scrollTo({ left: t.offsetLeft - thumbs.clientWidth / 2 + t.offsetWidth / 2, behavior: reduce ? 'auto' : 'smooth' });
+  }
+  function render() {
+    var sx = stepPx(), N = PRODUCTS.length;
+    cfItems.forEach(function (el, i) {
+      var d = wrapD(i - pos), ad = Math.abs(d), c = Math.max(-1.6, Math.min(1.6, d));
+      var x = -d * sx, z = -Math.min(ad, 3) * 170, ry = c * 32, sc = 1 - Math.min(ad, 3) * .06;
+      el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,' + z.toFixed(1) + 'px) rotateY(' + ry.toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')';
+      el.style.opacity = ad > 3 ? 0 : (1 - Math.max(0, ad - 1.2) * .4).toFixed(2);
+      el.style.zIndex = 100 - Math.round(ad * 10);
+      el.style.visibility = ad > 3.2 ? 'hidden' : 'visible';
+      el.style.pointerEvents = ad > 2.5 ? 'none' : 'auto';
+    });
+    setActive(((Math.round(pos) % N) + N) % N);
+  }
+  function loop() {
+    var df = target - pos;
+    if (Math.abs(df) < .002) { pos = target; render(); cfRaf = 0; return; }
+    pos += df * (reduce ? 1 : .14); render(); cfRaf = requestAnimationFrame(loop);
+  }
+  function go(t) { target = t; if (!cfRaf) cfRaf = requestAnimationFrame(loop); }
+  function goIdx(i) { go(Math.round(pos) + wrapD(i - Math.round(pos))); }
+  $('#cfN').addEventListener('click', function () { go(Math.round(target) + 1); });
+  $('#cfP').addEventListener('click', function () { go(Math.round(target) - 1); });
+  thumbs.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) goIdx(+b.dataset.i); });
+  stage.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { go(Math.round(target) + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { go(Math.round(target) - 1); e.preventDefault(); }
+    else if (e.key === 'Enter') open(act);
+  });
+  /* drag / swipe */
+  stage.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('.ctrl,.cf__a')) return;
+    dragging = true; moved = 0; vel = 0; sx0 = e.clientX; target = pos; stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', function (e) {
+    if (dragging) {
+      var dx = e.clientX - sx0; sx0 = e.clientX; moved += Math.abs(dx);
+      pos += dx / stepPx(); vel = dx / stepPx(); target = pos; render();
+    } else if (!reduce && e.pointerType === 'mouse') {
+      var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      cf.style.transform = 'rotateX(' + (-py * 5).toFixed(2) + 'deg) rotateY(' + (px * 7).toFixed(2) + 'deg)';
+    }
+  });
+  function endDrag(e) {
+    if (!dragging) return; dragging = false;
+    if (moved < 6) {
+      var el = document.elementFromPoint(e.clientX, e.clientY), it = el && el.closest && el.closest('.cf__i');
+      if (it) { var i = +it.dataset.i; if (i === act) open(i); else goIdx(i); }
+      else go(Math.round(pos));
+    } else go(Math.round(pos - vel * 3));
+  }
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', function () { dragging = false; go(Math.round(pos)); });
+  stage.addEventListener('mouseenter', function () { hoverS = true; });
+  stage.addEventListener('mouseleave', function () { hoverS = false; cf.style.transform = ''; });
+  /* lighting presets */
+  $$('#envSeg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      show.dataset.env = b.dataset.env;
+      $$('#envSeg button').forEach(function (x) { x.setAttribute('aria-checked', x === b); });
+    });
+  });
+  /* auto spin */
+  spinBtn.setAttribute('aria-pressed', !reduce);
+  spinBtn.addEventListener('click', function () { spinBtn.setAttribute('aria-pressed', spinBtn.getAttribute('aria-pressed') !== 'true'); });
+  setInterval(function () {
+    if (spinBtn.getAttribute('aria-pressed') === 'true' && visible && !hoverS && !dragging && !document.hidden) go(Math.round(target) + 1);
+  }, 3600);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(show);
+  addEventListener('resize', render);
+  render();
 
   /* ---------- reveal ---------- */
   var items = $$('[data-in]');
